@@ -1,4 +1,4 @@
-FROM node:25
+FROM node:latest
 
 # 2. Устанавливаем зависимости для Puppeteer/Chromium
 RUN apt-get update && apt-get install -y \
