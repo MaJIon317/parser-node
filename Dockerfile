@@ -1,6 +1,7 @@
-FROM node:latest
+# Используем Node 24 LTS
+FROM node:24-bullseye
 
-# 2. Устанавливаем зависимости для Puppeteer/Chromium
+# Устанавливаем зависимости для Chromium
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -24,20 +25,23 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# 3. Устанавливаем рабочую директорию
-WORKDIR /var/www/parser-node
+# Рабочая директория
+WORKDIR /usr/src/app
 
-# 4. Копируем package.json и package-lock.json
+# Копируем package.json и package-lock.json
 COPY package*.json ./
 
-# 5. Устанавливаем зависимости
-RUN npm install --production
+# Устанавливаем все зависимости
+RUN npm install
 
-# 7. Создаём папку для cookies
+# Копируем весь проект
+COPY . .
+
+# Создаём папку для cookies
 RUN mkdir -p ./cookies
 
-# 8. Экспонируем порт
+# Экспонируем порт
 EXPOSE 3200
 
-# 9. Запуск сервера
+# Запуск сервера
 CMD ["node", "server.js"]
